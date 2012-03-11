@@ -7,9 +7,11 @@ class MoviesController < ApplicationController
   end
 
   def index
-    #@movies = Movie.all
-    @selected=params[:sort]
-    @movies = Movie.find(:all, :order => params[:sort]) #.order(params[:sort])    
+    #debugger
+    @all_ratings = Movie.all.map {|m| m.rating }.uniq # Get all entries, iterate over them, get only ratings,from that get unique ratings
+    @ratings = params["ratings"] ? params["ratings"].keys : @all_ratings #if params["rating"] is not nil, then get the keys of that hash
+    @selected = params[:sort]
+    @movies = Movie.order(params[:sort]).find_all_by_rating(@ratings) #.find(:all, :order => params[:sort])    
   end
 
   def new
