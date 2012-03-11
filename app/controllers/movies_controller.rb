@@ -9,13 +9,24 @@ class MoviesController < ApplicationController
   def index
     #debugger
     
+    # sanitize the rating params hash so that its not a check box hash
+    if params[:ratings] && params[:ratings].respond_to?(:keys)
+      params[:ratings] = params[:ratings].keys 
+    end
+
+    # if the params hash for ratings or sort_by is not set(does not receive anything from the view) 
+    # and if the session hash has values, redirect to index with the URI determined by session hash. 
+    if !params[:ratings] && !params[:sort_by] && (session[:ratings] || session[:sort_by])
+      redirect_to action: 'index', ratings: session[:ratings], sort_by: session[:sort_by]
+    end
+    
     @all_ratings = Movie.all.map {|m| m.rating }.uniq   # Get all entries, iterate over them, get only ratings,from that get unique ratings
     
     # If session does not exist, initialize the session    
     session[:ratings] ||= @all_ratings
     session[:sort_by] ||= ''
     
-    @ratings = params["ratings"] ? params["ratings"].keys : session[:ratings]   #if params["rating"] is not nil, then get the keys of that hash
+    @ratings = params["ratings"] ? params["ratings"] : session[:ratings]   #if params["rating"] is  nil, then get it's value from the session
     
     # Checking if the sort_by value is from the array [title, release_date] so that nothing is done if the user enters a nonexistant word like 'foo' to sort by
     @sort_by = %w(title release_date).index(params[:sort_by]) ? params[:sort_by] : session[:sort_by] 
