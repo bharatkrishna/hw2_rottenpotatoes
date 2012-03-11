@@ -33,6 +33,7 @@ class MoviesController < ApplicationController
     
     @movies = Movie.order(@sort_by).find_all_by_rating(@ratings) #.find(:all, :order => params[:sort])   
     
+    # update the session
     session[:ratings] = @ratings
     session[:sort_by] = @sort_by
      
