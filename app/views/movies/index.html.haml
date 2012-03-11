@@ -3,7 +3,7 @@
 
 = form_tag movies_path, :method => :get do  
   =hidden_field_tag 'sort_by', @sort_by
-  -# creates a hidden field: <input id="sort_by" name="sort_by" type="hidden" value="title" />
+  -# creates a hidden field: <input id="sort_by" name="sort_by" type="hidden" value="title" /> value is title since sort_by was 'title'
   Include: 
   - @all_ratings.each do |rating|
     = rating

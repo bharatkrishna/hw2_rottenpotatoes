@@ -9,13 +9,22 @@ class MoviesController < ApplicationController
   def index
     #debugger
     
-    @all_ratings = Movie.all.map {|m| m.rating }.uniq # Get all entries, iterate over them, get only ratings,from that get unique ratings
-    @ratings = params["ratings"] ? params["ratings"].keys : @all_ratings #if params["rating"] is not nil, then get the keys of that hash
+    @all_ratings = Movie.all.map {|m| m.rating }.uniq   # Get all entries, iterate over them, get only ratings,from that get unique ratings
+    
+    # If session does not exist, initialize the session    
+    session[:ratings] ||= @all_ratings
+    session[:sort_by] ||= ''
+    
+    @ratings = params["ratings"] ? params["ratings"].keys : session[:ratings]   #if params["rating"] is not nil, then get the keys of that hash
     
     # Checking if the sort_by value is from the array [title, release_date] so that nothing is done if the user enters a nonexistant word like 'foo' to sort by
-    @sort_by = %w(title release_date).index(params[:sort_by]) ? params[:sort_by] : ''
+    @sort_by = %w(title release_date).index(params[:sort_by]) ? params[:sort_by] : session[:sort_by] 
     
-    @movies = Movie.order(@sort_by).find_all_by_rating(@ratings) #.find(:all, :order => params[:sort])    
+    @movies = Movie.order(@sort_by).find_all_by_rating(@ratings) #.find(:all, :order => params[:sort])   
+    
+    session[:ratings] = @ratings
+    session[:sort_by] = @sort_by
+     
   end
 
   def new
