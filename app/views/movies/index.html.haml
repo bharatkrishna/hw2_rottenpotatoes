@@ -2,6 +2,8 @@
 %h1 All Movies
 
 = form_tag movies_path, :method => :get do  
+  =hidden_field_tag 'sort_by', @sort_by
+  -# creates a hidden field: <input id="sort_by" name="sort_by" type="hidden" value="title" />
   Include: 
   - @all_ratings.each do |rating|
     = rating
@@ -13,9 +15,9 @@
   %thead
     %tr 
       -# Below, the class is set to hilite based on the value of selected(declaration is in the controller)
-      %th{"class"=>(@selected == "title" ? "hilite" : "")}= link_to "Movie Title", movies_path(:sort=>"title", @ratings => params[:ratings]), {:id=>"title_header"}
+      %th{"class"=>(@sort_by == "title" ? "hilite" : "")}= link_to "Movie Title", movies_path(sort_by: "title", ratings: params[:ratings]), {:id=>"title_header"}
       %th Rating
-      %th{"class"=>(@selected == "release_date" ? "hilite": "")}= link_to "Release Date", movies_path(:sort=>"release_date", @ratings=> params[:ratings]), {:id=>"release_date_header"}
+      %th{"class"=>(@sort_by == "release_date" ? "hilite": "")}= link_to "Release Date", movies_path(sort_by: "release_date", ratings: params[:ratings]), {:id=>"release_date_header"}
       %th More Info
   %tbody
     - @movies.each do |movie|
